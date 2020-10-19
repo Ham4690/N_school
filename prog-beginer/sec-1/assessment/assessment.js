@@ -14,22 +14,48 @@ function removeAllChildren(element) {
     return 
 }
 
+userNameInput.onkeydown = event => {
+    if(event.key === 'Enter') {
+        assessmentButton.onclick();
+    }
+}
+
 assessmentButton.onclick = () => {
     const userName = userNameInput.value;
     if (userName.length === 0) {
         return;
     } 
     console.log(userName);
+    // 診断結果の設定
     removeAllChildren(resultDivided);
-    removeAllChildren(tweetDivided);
+
     const header = document.createElement('h3');
     header.innerText = userName + 'さんの診断結果';
     resultDivided.appendChild(header);
 
     const paragraph = document.createElement('p');
-    paragraph.innerText = assessment(userName);
+    const result = assessment(userName);
+    paragraph.innerText = result;
     resultDivided.appendChild(paragraph);
-    // TODO ツイートエリアの作成
+
+    // ツイートボタンの作成
+    removeAllChildren(tweetDivided);
+    const anchor = document.createElement('a');
+    const hrefValue =
+        'https://twitter.com/intent/tweet?button_hashtag=' + 
+        encodeURIComponent('あなたのいいところ')  + 
+        '&ref_src=twsrc%5Etfw';
+    anchor.setAttribute('href', hrefValue);
+    anchor.className = 'twitter-hashtag-button';
+    anchor.setAttribute('data-text', result);
+    anchor.innerText = 'Tweet #あなたのいいところ';
+
+    // jsの追加
+    tweetDivided.appendChild(anchor)
+    const script = document.createElement('script');
+    script.setAttribute('src', 'https://platform.twitter.com/widgets.js');
+    tweetDivided.appendChild(script);
+
 }
 
 
